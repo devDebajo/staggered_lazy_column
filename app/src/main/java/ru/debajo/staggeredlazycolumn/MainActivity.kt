@@ -14,7 +14,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ru.debajo.staggeredlazycolumn.lib.StaggeredLazyColumn
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {

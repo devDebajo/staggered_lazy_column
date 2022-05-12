@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn.lib
+package ru.debajo.staggeredlazycolumn
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
