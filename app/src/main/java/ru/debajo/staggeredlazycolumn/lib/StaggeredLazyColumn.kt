@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.lib
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
@@ -13,7 +13,6 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import ru.debajo.staggeredlazycolumn.lib.*
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)

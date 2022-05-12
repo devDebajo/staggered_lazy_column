@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ru.debajo.staggeredlazycolumn.lib.StaggeredLazyColumn
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             StaggeredLazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                columns = 3,
+                columns = 4,
                 horizontalSpacing = 8.dp,
                 verticalSpacing = 8.dp,
                 contentPadding = PaddingValues(
