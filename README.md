@@ -5,4 +5,4 @@ Used LazyLayout from Jetpack Compose 1.2.0-beta01
 
 Temporary not published to maven
 
-![Screenshot](img/screenshot.jpg)
+<img src="img/screenshot.jpg" alt="Screenshot" width="200"/>
