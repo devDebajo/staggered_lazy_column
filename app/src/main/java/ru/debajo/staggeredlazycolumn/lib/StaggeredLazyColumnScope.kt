@@ -18,11 +18,7 @@ class StaggeredLazyColumnScope : LazyLayoutItemProvider {
         contentType: Any? = null,
         content: @Composable () -> Unit
     ) {
-        val startIndex = intervals.lastOrNull()?.lastIndex?.let { it + 1 } ?: 0
-
-        val interval = Interval(
-            startIndex = startIndex,
-            lastIndex = startIndex,
+        items(
             count = 1,
             key = if (key == null) {
                 null
@@ -32,7 +28,6 @@ class StaggeredLazyColumnScope : LazyLayoutItemProvider {
             contentType = { contentType },
             itemContent = { content() },
         )
-        intervals.add(interval)
     }
 
     fun items(
