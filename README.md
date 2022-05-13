@@ -21,3 +21,22 @@ Then add it to module level build.gradle:
 ```kotlin
 implementation 'com.github.devDebajo:staggered_lazy_column:{latest_version}'
 ```
+
+# Usage
+```kotlin
+StaggeredLazyColumn(
+    modifier = Modifier.fillMaxSize(),
+    columns = 2,
+    horizontalSpacing = 8.dp,
+    verticalSpacing = 6.dp,
+    contentPadding = PaddingValues(16.dp),
+) {
+    items(
+        count = items.size,
+        key = { items[it].id },
+        contentType = { "my_type" },
+    ) { index ->
+        Text(items[index].name)
+    }
+}
+```
