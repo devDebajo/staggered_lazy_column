@@ -23,7 +23,7 @@ fun StaggeredLazyColumn(
     horizontalSpacing: Dp = 0.dp,
     verticalSpacing: Dp = 0.dp,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    content: StaggeredLazyColumnScope .() -> Unit
+    content: StaggeredLazyColumnScope.() -> Unit
 ) {
     check(columns > 1)
 
