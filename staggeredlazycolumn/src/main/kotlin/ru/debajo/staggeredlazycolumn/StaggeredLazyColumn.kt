@@ -34,7 +34,7 @@ fun StaggeredLazyColumn(
         }
     }
 
-    val columnsInfo = remember(latestContent) {
+    val columnsInfo = remember(provider) {
         StaggeredColumnsInfo(columns = (0 until columns).map { StaggeredColumnInfo() })
     }
     val result = remember { mutableListOf<Pair<Placeable, StaggeredPlacement>>() }
