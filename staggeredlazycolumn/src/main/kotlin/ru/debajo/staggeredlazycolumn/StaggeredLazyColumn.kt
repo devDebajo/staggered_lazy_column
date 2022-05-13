@@ -19,14 +19,12 @@ import androidx.compose.ui.unit.dp
 fun StaggeredLazyColumn(
     modifier: Modifier = Modifier,
     state: StaggeredLazyColumnScrollState = rememberStaggeredLazyColumnState(),
-    columns: Int = 2,
+    columns: StaggeredLazyColumnCells = StaggeredLazyColumnCells.Fixed(2),
     horizontalSpacing: Dp = 0.dp,
     verticalSpacing: Dp = 0.dp,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     content: StaggeredLazyColumnScope.() -> Unit
 ) {
-    check(columns > 1)
-
     val latestContent = rememberUpdatedState(content)
     val provider by remember {
         derivedStateOf {
@@ -34,8 +32,9 @@ fun StaggeredLazyColumn(
         }
     }
 
+    val columnsCount = (columns as StaggeredLazyColumnCells.Fixed).columns
     val columnsInfo = remember(provider) {
-        StaggeredColumnsInfo(columns = (0 until columns).map { StaggeredColumnInfo() })
+        StaggeredColumnsInfo(columns = (0 until columnsCount).map { StaggeredColumnInfo() })
     }
     val result = remember { mutableListOf<Pair<Placeable, StaggeredPlacement>>() }
     LazyLayout(
@@ -47,7 +46,7 @@ fun StaggeredLazyColumn(
         measurePolicy = { constraints ->
             prepareItemsToPlace(
                 constraints = constraints,
-                columns = columns,
+                columns = columnsCount,
                 horizontalSpacing = horizontalSpacing,
                 verticalSpacing = verticalSpacing,
                 columnsInfos = columnsInfo,
