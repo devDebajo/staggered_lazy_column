@@ -10,14 +10,14 @@ Used LazyLayout from Jetpack Compose 1.2.0-beta01
 
 # Install
 
-In project level build.gradle add jitpack.io repository:
+In project level `build.gradle` add jitpack.io repository:
 ```kotlin
 repositories {
     maven { url 'https://jitpack.io' }
 }
 ```
 
-Then add it to module level build.gradle:
+Then add it to module level `build.gradle`:
 ```kotlin
 implementation 'com.github.devDebajo:staggered_lazy_column:{latest_version}'
 ```
