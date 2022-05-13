@@ -32,11 +32,17 @@ StaggeredLazyColumn(
     contentPadding = PaddingValues(16.dp),
 ) {
     items(
-        count = items.size,
-        key = { items[it].id },
+        count = dataset.size,
+        key = { dataset[it].id },
         contentType = { "my_type" },
     ) { index ->
-        Text(items[index].name)
+        Text(dataset[index].name)
     }
 }
 ```
+
+# Roadmap
+* Access to first visible index and offset
+* Scrolling to item by index
+* Visible items info
+* Bugfixes
