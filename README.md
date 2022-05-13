@@ -26,7 +26,7 @@ implementation 'com.github.devDebajo:staggered_lazy_column:{latest_version}'
 ```kotlin
 StaggeredLazyColumn(
     modifier = Modifier.fillMaxSize(),
-    columns = 2,
+    columns = StaggeredLazyColumnCells.Adaptive(100.dp, maxColumns = 5),
     horizontalSpacing = 8.dp,
     verticalSpacing = 6.dp,
     contentPadding = PaddingValues(16.dp),
