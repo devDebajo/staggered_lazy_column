@@ -46,6 +46,7 @@ StaggeredLazyColumn(
 * Scrolling to item by index
 * Visible items info
 * Bugfixes
+* Adaptive columns count
 
 License
 -------
