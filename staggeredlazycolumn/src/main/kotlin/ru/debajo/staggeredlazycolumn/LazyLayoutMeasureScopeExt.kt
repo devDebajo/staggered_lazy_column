@@ -1,12 +1,15 @@
 package ru.debajo.staggeredlazycolumn
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.layout.LazyLayoutItemProvider
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -61,6 +64,32 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         }
         if (columnsInfos.measuredItems == provider.itemCount) {
             state.maxValue = columnsInfos.maxHeight() - constraints.maxHeight
+        }
+    }
+}
+
+// Should not call every measure
+@OptIn(ExperimentalFoundationApi::class)
+internal fun LazyLayoutMeasureScope.calculateColumnsCount(
+    contentPadding: PaddingValues,
+    horizontalSpacing: Dp,
+    constraints: Constraints,
+    columns: StaggeredLazyColumnCells,
+): Int {
+    Log.d("yopta", "calculateColumnsCount")
+    return when (columns) {
+        is StaggeredLazyColumnCells.Fixed -> columns.columns
+        is StaggeredLazyColumnCells.Adaptive -> {
+            var availableSpacePx = constraints.maxWidth - contentPadding.calculateHorizontalPadding(layoutDirection).toPx()
+            val itemMinWidthPx = columns.minWidth.toPx().roundToInt()
+            val spacingPx = horizontalSpacing.toPx()
+            var result = 0
+            do {
+                availableSpacePx -= itemMinWidthPx
+                availableSpacePx -= spacingPx
+                result++
+            } while (availableSpacePx > 0)
+            return min(max(2, result), columns.maxColumns)
         }
     }
 }

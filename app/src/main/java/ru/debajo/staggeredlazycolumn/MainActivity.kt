@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             StaggeredLazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                columns = StaggeredLazyColumnCells.Fixed(4),
+                columns = StaggeredLazyColumnCells.Adaptive(10.dp, 5),
                 horizontalSpacing = 8.dp,
                 verticalSpacing = 8.dp,
                 contentPadding = PaddingValues(
