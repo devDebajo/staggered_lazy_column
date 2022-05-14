@@ -24,10 +24,11 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
 ) {
     result.clear()
     val itemWidth = ((constraints.maxWidth - horizontalSpacing.toPx() * (columns - 1)) / columns).roundToInt()
-    val itemConstraints = constraints.copy(
+    val itemConstraints = Constraints(
         minWidth = 0,
         maxWidth = itemWidth,
         minHeight = 0,
+        maxHeight = Constraints.Infinity
     )
     val viewportTop = state.value
     val viewportBottom = viewportTop + constraints.maxHeight
