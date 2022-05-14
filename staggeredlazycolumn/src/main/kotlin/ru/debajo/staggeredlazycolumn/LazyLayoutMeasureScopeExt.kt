@@ -1,6 +1,5 @@
 package ru.debajo.staggeredlazycolumn
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.layout.LazyLayoutItemProvider
@@ -76,7 +75,6 @@ internal fun LazyLayoutMeasureScope.calculateColumnsCount(
     constraints: Constraints,
     columns: StaggeredLazyColumnCells,
 ): Int {
-    Log.d("yopta", "calculateColumnsCount")
     return when (columns) {
         is StaggeredLazyColumnCells.Fixed -> columns.columns
         is StaggeredLazyColumnCells.Adaptive -> {
