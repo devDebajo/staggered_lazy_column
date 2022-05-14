@@ -46,8 +46,11 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
             if (top > 0) {
                 top += verticalSpacing.toPx().toInt()
             }
-            val placeableAt = StaggeredPlacement(index = index, top = top, left = left, bottom = top + placeable.height)
-            result.add(placeable to placeableAt)
+            val bottom = top + placeable.height
+            val placeableAt = StaggeredPlacement(index = index, top = top, left = left, bottom = bottom)
+            if (top in viewportTop..viewportBottom || bottom in viewportTop..viewportBottom) {
+                result.add(placeable to placeableAt)
+            }
             columnsInfos.add(column, placeableAt)
             columnsInfos.measuredItems++
             if (columnsInfos.minHeight() >= viewportBottom) {
