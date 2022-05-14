@@ -22,6 +22,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
     provider: LazyLayoutItemProvider,
     result: MutableList<Pair<Placeable, StaggeredPlacement>>,
 ) {
+    result.clear()
     val itemWidth = ((constraints.maxWidth - horizontalSpacing.toPx() * (columns - 1)) / columns).roundToInt()
     val itemConstraints = constraints.copy(
         minWidth = 0,
@@ -31,7 +32,6 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
     val viewportTop = state.value
     val viewportBottom = viewportTop + constraints.maxHeight
 
-    result.clear()
     val firstVisibleItem = columnsInfos.getFirstVisible(viewportTop)
     val startIndex = firstVisibleItem?.index ?: columnsInfos.measuredItems
     var columnsMaxHeight = 0

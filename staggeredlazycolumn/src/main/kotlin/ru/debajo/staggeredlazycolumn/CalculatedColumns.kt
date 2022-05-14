@@ -15,22 +15,20 @@ internal class CalculatedColumns {
     var columns by mutableStateOf(2)
         private set
 
+    context(LazyLayoutMeasureScope)
     fun calculateIfNeed(
-        lazyLayoutMeasureScope: LazyLayoutMeasureScope,
         contentPadding: PaddingValues,
         horizontalSpacing: Dp,
         constraints: Constraints,
         columns: StaggeredLazyColumnCells,
     ): Int {
-        with(lazyLayoutMeasureScope) {
-            if (environmentChanged(contentPadding, horizontalSpacing, constraints, columns)) {
-                this@CalculatedColumns.columns = calculateColumnsCount(
-                    contentPadding = contentPadding,
-                    horizontalSpacing = horizontalSpacing,
-                    constraints = constraints,
-                    columns = columns
-                )
-            }
+        if (environmentChanged(contentPadding, horizontalSpacing, constraints, columns)) {
+            this@CalculatedColumns.columns = calculateColumnsCount(
+                contentPadding = contentPadding,
+                horizontalSpacing = horizontalSpacing,
+                constraints = constraints,
+                columns = columns
+            )
         }
         return this@CalculatedColumns.columns
     }

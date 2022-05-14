@@ -4,14 +4,15 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.layout.LazyLayout
+import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -33,24 +34,18 @@ fun StaggeredLazyColumn(
     }
 
     val calculatedColumns = remember { CalculatedColumns() }
-    val columnsInfo = remember(provider, calculatedColumns.columns) {
-        StaggeredColumnsInfo(columns = (0 until calculatedColumns.columns).map { StaggeredColumnInfo() })
-    }
+    val columnsInfo = remember(provider) { StaggeredColumnsInfo() }
     val result = remember { mutableListOf<Pair<Placeable, StaggeredPlacement>>() }
-    LazyLayout(
-        modifier = modifier
-            .padding(contentPadding)
-            .scrollable(state, orientation = Orientation.Vertical, reverseDirection = true)
-            .offset { IntOffset(0, -state.value) },
-        itemProvider = provider,
-        measurePolicy = { constraints ->
+    val measurePolicy = remember<LazyLayoutMeasureScope.(Constraints) -> MeasureResult>(columnsInfo) {
+        { constraints ->
             val currentColumnsCount = calculatedColumns.calculateIfNeed(
-                this,
-                contentPadding,
-                horizontalSpacing,
-                constraints,
-                columns,
+                contentPadding = contentPadding,
+                horizontalSpacing = horizontalSpacing,
+                constraints = constraints,
+                columns = columns,
             )
+
+            columnsInfo.onColumnsCalculated(currentColumnsCount)
 
             prepareItemsToPlace(
                 constraints = constraints,
@@ -64,10 +59,19 @@ fun StaggeredLazyColumn(
             )
 
             layout(constraints.maxWidth, constraints.maxHeight) {
+                val offset = state.value
                 result.forEach { (placeable, placeableAt) ->
-                    placeable.placeRelative(placeableAt.left, placeableAt.top)
+                    placeable.placeRelative(placeableAt.left, placeableAt.top - offset)
                 }
             }
         }
+    }
+
+    LazyLayout(
+        modifier = modifier
+            .padding(contentPadding)
+            .scrollable(state, orientation = Orientation.Vertical, reverseDirection = true),
+        itemProvider = provider,
+        measurePolicy = measurePolicy,
     )
 }

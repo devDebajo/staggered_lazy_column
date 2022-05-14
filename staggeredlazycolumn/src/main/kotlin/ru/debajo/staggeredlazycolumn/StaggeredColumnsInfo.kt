@@ -1,10 +1,16 @@
 package ru.debajo.staggeredlazycolumn
 
 internal class StaggeredColumnsInfo(
-    val columns: List<StaggeredColumnInfo>,
+    var columns: List<StaggeredColumnInfo> = emptyList(),
     var measuredItems: Int = 0,
     val items: MutableMap<Int, StaggeredPlacement> = mutableMapOf(),
 ) {
+    fun onColumnsCalculated(count: Int) {
+        if (columns.size != count) {
+            columns = (0 until count).map { StaggeredColumnInfo() }
+        }
+    }
+
     fun getFirstVisible(y: Int): StaggeredPlacement? {
         return items.values.filter { item -> y in item.top..item.bottom }.minByOrNull { it.top }
     }
