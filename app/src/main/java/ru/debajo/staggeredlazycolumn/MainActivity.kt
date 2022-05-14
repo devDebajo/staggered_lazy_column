@@ -6,16 +6,27 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlin.random.Random
 
+@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,47 +40,73 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            StaggeredLazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                columns = StaggeredLazyColumnCells.Adaptive(10.dp, 5),
-                horizontalSpacing = 8.dp,
-                verticalSpacing = 8.dp,
-                contentPadding = PaddingValues(
-                    horizontal = 16.dp,
-                    vertical = 8.dp,
-                )
-            ) {
-                item {
-                    Item(
-                        color = Color.White,
-                        height = 90.dp,
-                        name = "Single item"
+            val layoutDirection = LocalLayoutDirection.current
+            val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+            Scaffold(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                topBar = {
+                    SmallTopAppBar(
+                        title = {
+                            Text(
+                                text = "Title",
+                                fontSize = 36.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                            )
+                        },
+                        scrollBehavior = scrollBehavior,
+                        colors = TopAppBarDefaults.smallTopAppBarColors(
+                            scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                        )
                     )
                 }
-
-                items(
-                    count = items.size,
-                    key = { it },
-                    contentType = { "type" },
-                    itemContent = { index ->
+            ) { contentPadding ->
+                StaggeredLazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    columns = StaggeredLazyColumnCells.Adaptive(10.dp, 5),
+                    horizontalSpacing = 8.dp,
+                    verticalSpacing = 8.dp,
+                    contentPadding = PaddingValues(
+                        top = contentPadding.calculateTopPadding() + 8.dp,
+                        bottom = contentPadding.calculateBottomPadding() + 8.dp,
+                        start = contentPadding.calculateStartPadding(layoutDirection) + 16.dp,
+                        end = contentPadding.calculateEndPadding(layoutDirection) + 16.dp,
+                    )
+                ) {
+                    item {
                         Item(
-                            color = items[index].first,
-                            height = items[index].second,
-                            name = index.toString(),
+                            color = Color.White,
+                            height = 90.dp,
+                            name = "Single item"
                         )
                     }
-                )
 
-                items(
-                    count = 5,
-                    itemContent = { index ->
-                        Item(
-                            color = items[index].first,
-                            height = items[index].second,
-                            name = "Trailing item $index"
-                        )
-                    }
-                )
+                    items(
+                        count = items.size,
+                        key = { it },
+                        contentType = { "type" },
+                        itemContent = { index ->
+                            Item(
+                                color = items[index].first,
+                                height = items[index].second,
+                                name = index.toString(),
+                            )
+                        }
+                    )
+
+                    items(
+                        count = 5,
+                        itemContent = { index ->
+                            Item(
+                                color = items[index].first,
+                                height = items[index].second,
+                                name = "Trailing item $index"
+                            )
+                        }
+                    )
+                }
             }
         }
     }

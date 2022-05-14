@@ -21,6 +21,7 @@ fun StaggeredLazyColumn(
     modifier: Modifier = Modifier,
     state: StaggeredLazyColumnScrollState = rememberStaggeredLazyColumnState(),
     columns: StaggeredLazyColumnCells = StaggeredLazyColumnCells.Fixed(2),
+    userScrollEnabled: Boolean = true,
     horizontalSpacing: Dp = 0.dp,
     verticalSpacing: Dp = 0.dp,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -72,7 +73,13 @@ fun StaggeredLazyColumn(
     LazyLayout(
         modifier = modifier
             .padding(contentPadding)
-            .scrollable(state, orientation = Orientation.Vertical, reverseDirection = true),
+            .scrollable(
+                state = state,
+                orientation = Orientation.Vertical,
+                reverseDirection = true,
+                interactionSource = state.internalInteractionSource,
+                enabled = userScrollEnabled,
+            ),
         itemProvider = provider,
         measurePolicy = measurePolicy,
     )

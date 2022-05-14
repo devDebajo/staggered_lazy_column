@@ -67,7 +67,7 @@ afterEvaluate {
 
                 groupId = 'ru.debajo'
                 artifactId = 'staggeredlazycolumn'
-                version = '1.0.0-alpha05'
+                version = '1.0.0-alpha06'
             }
         }
     }

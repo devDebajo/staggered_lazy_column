@@ -3,6 +3,8 @@ package ru.debajo.staggeredlazycolumn
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -22,6 +24,10 @@ class StaggeredLazyColumnScrollState(initial: Int) : ScrollableState {
                 value = newMax
             }
         }
+
+    val interactionSource: InteractionSource get() = internalInteractionSource
+
+    internal val internalInteractionSource: MutableInteractionSource = MutableInteractionSource()
 
     private var _maxValueState = mutableStateOf(Int.MAX_VALUE, structuralEqualityPolicy())
 
