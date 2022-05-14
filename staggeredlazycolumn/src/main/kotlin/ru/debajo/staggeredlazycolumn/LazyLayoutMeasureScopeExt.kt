@@ -20,7 +20,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
     columnsInfos: StaggeredColumnsInfo,
     state: StaggeredLazyColumnScrollState,
     provider: LazyLayoutItemProvider,
-    result: MutableList<Pair<Placeable, StaggeredPlacement>>
+    result: MutableList<Pair<Placeable, StaggeredPlacement>>,
 ) {
     val itemWidth = ((constraints.maxWidth - horizontalSpacing.toPx() * (columns - 1)) / columns).roundToInt()
     val itemConstraints = constraints.copy(
@@ -39,7 +39,6 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         val item = columnsInfos.items[index]
         if (item == null) {
             val placeable = measure(index, itemConstraints).first()
-            placeable.measuredHeight
             val column = columnsInfos.nextPlaceColumn()
             val left = column * itemWidth + column * horizontalSpacing.toPx().toInt()
             var top = columnsInfos.columnHeight(column)
