@@ -38,12 +38,14 @@ fun StaggeredLazyColumn(
     val result = remember { mutableListOf<Pair<Placeable, StaggeredPlacement>>() }
     val measurePolicy = remember<LazyLayoutMeasureScope.(Constraints) -> MeasureResult>(columnsInfo) {
         { constraints ->
-            val currentColumnsCount = calculatedColumns.calculateIfNeed(
-                contentPadding = contentPadding,
-                horizontalSpacing = horizontalSpacing,
-                constraints = constraints,
-                columns = columns,
-            )
+            val currentColumnsCount = with(calculatedColumns) {
+                calculateIfNeed(
+                    contentPadding = contentPadding,
+                    horizontalSpacing = horizontalSpacing,
+                    constraints = constraints,
+                    columns = columns,
+                )
+            }
 
             columnsInfo.onColumnsCalculated(currentColumnsCount)
 

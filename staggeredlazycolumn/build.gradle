@@ -28,7 +28,6 @@ android {
         kotlin {
             kotlinOptions {
                 freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-                freeCompilerArgs += "-Xcontext-receivers"
             }
         }
     }
