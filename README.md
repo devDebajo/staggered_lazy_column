@@ -26,7 +26,7 @@ implementation 'com.github.devDebajo:staggered_lazy_column:{latest_version}'
 
 # Usage
 ```kotlin
-val state: State = viewModel.state.collectAsState() // State should be Stable or Immutable
+val state: State by viewModel.state.collectAsState() // State should be Stable or Immutable
 StaggeredLazyColumn(
     modifier = Modifier.fillMaxSize(),
     columns = StaggeredLazyColumnCells.Adaptive(100.dp, maxColumns = 5),
