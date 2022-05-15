@@ -26,6 +26,7 @@ implementation 'com.github.devDebajo:staggered_lazy_column:{latest_version}'
 
 # Usage
 ```kotlin
+val state: State by viewModel.state.collectAsState() // State should be Stable or Immutable
 StaggeredLazyColumn(
     modifier = Modifier.fillMaxSize(),
     columns = StaggeredLazyColumnCells.Adaptive(100.dp, maxColumns = 5),
@@ -34,14 +35,16 @@ StaggeredLazyColumn(
     contentPadding = PaddingValues(16.dp),
 ) {
     items(
-        count = dataset.size,
-        key = { dataset[it].id },
+        count = state.items.size,
+        key = { state.items[it].id },
         contentType = { "my_type" },
     ) { index ->
-        Text(dataset[index].name)
+        Text(state.items[index].name)
     }
 }
 ```
+For get more scrolling performance your state should be `@Stable` type\
+More info about stable types and skipping recompositions when input haven't changed [here](https://developer.android.com/jetpack/compose/lifecycle#skipping)
 
 # Roadmap
 * Access to first visible index and offset
