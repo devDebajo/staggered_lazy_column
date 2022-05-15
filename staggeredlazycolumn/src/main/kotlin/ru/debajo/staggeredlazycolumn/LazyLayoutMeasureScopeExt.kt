@@ -49,7 +49,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
                 }
                 val bottom = top + placeable.height
                 val placeableAt = StaggeredPlacement(index = index, top = top, left = left, bottom = bottom)
-                if ((top - verticalSpacingPx) in viewportTop..viewportBottom || (bottom + verticalSpacingPx) in viewportTop..viewportBottom) {
+                if (placeableAt.inViewPort(verticalSpacingPx, viewportTop, viewportBottom)) {
                     result.add(placeable to placeableAt)
                 }
                 columnsInfos.add(column, placeableAt)
@@ -61,7 +61,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
             }
         } else {
             val placeable = measure(index, itemConstraints).first()
-            if ((item.top - verticalSpacingPx) in viewportTop..viewportBottom || (item.bottom + verticalSpacingPx) in viewportTop..viewportBottom) {
+            if (item.inViewPort(verticalSpacingPx, viewportTop, viewportBottom)) {
                 result.add(placeable to item)
             }
             if (item.top - verticalSpacingPx > viewportBottom) {

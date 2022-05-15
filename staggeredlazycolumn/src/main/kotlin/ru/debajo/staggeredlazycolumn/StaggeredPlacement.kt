@@ -5,4 +5,12 @@ internal class StaggeredPlacement(
     val top: Int,
     val left: Int,
     val bottom: Int,
-)
+) {
+    fun inViewPort(spacingPx: Int, viewportTop: Int, viewportBottom: Int): Boolean {
+        val topWithSpacing = top - spacingPx
+        val bottomWithSpacing = bottom + spacingPx
+        return topWithSpacing in viewportTop..viewportBottom ||
+                bottomWithSpacing in viewportTop..viewportBottom ||
+                topWithSpacing <= viewportTop && bottomWithSpacing >= viewportBottom
+    }
+}
