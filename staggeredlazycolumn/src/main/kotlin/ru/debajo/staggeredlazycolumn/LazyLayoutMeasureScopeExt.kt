@@ -33,8 +33,8 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         minHeight = 0,
         maxHeight = Constraints.Infinity
     )
-    val viewportTop: Int = state.value - contentPadding.calculateTopPadding().toPx().roundToInt()
-    val viewportBottom: Int = viewportTop + constraints.maxHeight + contentPadding.calculateBottomPadding().toPx().roundToInt()
+    val viewportTop: Int = state.value
+    val viewportBottom: Int = viewportTop + constraints.maxHeight
 
     val verticalSpacingPx = verticalSpacing.toPx().toInt()
     val firstVisibleItem = columnsInfos.getFirstVisible(viewportTop, verticalSpacingPx)
@@ -52,7 +52,8 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
                 }
                 val bottom = top + placeable.height
                 val placeableAt = StaggeredPlacement(index = index, top = top, left = left, bottom = bottom)
-                if (placeableAt.inViewPort(
+                if (
+                    placeableAt.inViewPort(
                         spacingPx = verticalSpacingPx,
                         viewportTop = viewportTop,
                         viewportBottom = viewportBottom,
@@ -84,6 +85,15 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
                 break
             }
         }
+    }
+
+    val firstElement = result.minByOrNull { it.second.index }
+    if (firstElement != null) {
+        state.firstVisibleItemIndex = firstElement.second.index
+        state.firstVisibleItemScrollOffset = viewportTop - firstElement.second.top
+    } else {
+        state.firstVisibleItemIndex = 0
+        state.firstVisibleItemScrollOffset = 0
     }
 
     state.visibleItemsController.onEndMeasure(

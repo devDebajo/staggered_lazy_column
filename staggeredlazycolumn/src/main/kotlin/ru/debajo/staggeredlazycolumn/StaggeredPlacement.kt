@@ -13,8 +13,9 @@ internal class StaggeredPlacement(
     ): Boolean {
         val topWithSpacing = top - spacingPx
         val bottomWithSpacing = bottom + spacingPx
-        return topWithSpacing in viewportTop..viewportBottom ||
+        val inViewPort = topWithSpacing in viewportTop..viewportBottom ||
                 bottomWithSpacing in viewportTop..viewportBottom ||
                 topWithSpacing <= viewportTop && bottomWithSpacing >= viewportBottom
+        return inViewPort
     }
 }
