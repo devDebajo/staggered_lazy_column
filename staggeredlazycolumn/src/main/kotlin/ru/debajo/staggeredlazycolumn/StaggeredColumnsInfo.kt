@@ -2,20 +2,28 @@ package ru.debajo.staggeredlazycolumn
 
 internal class StaggeredColumnsInfo(
     var columns: List<StaggeredColumnInfo> = emptyList(),
-    var measuredItems: Int = 0,
     val items: MutableMap<Int, StaggeredPlacement> = mutableMapOf(),
 ) {
+    val measuredItems: Int
+        get() = items.size
+
     fun onColumnsCalculated(count: Int) {
         if (columns.size != count) {
             columns = (0 until count).map { StaggeredColumnInfo() }
+            items.clear()
         }
     }
 
-    fun getFirstVisible(y: Int): StaggeredPlacement? {
-        return items.values.filter { item -> y in item.top..item.bottom }.minByOrNull { it.top }
+    fun getFirstVisible(y: Int, verticalSpacingPx: Int): StaggeredPlacement? {
+        return items.values.filter { item ->
+            y in (item.top - verticalSpacingPx)..(item.bottom + verticalSpacingPx)
+        }.minByOrNull { it.top }
     }
 
     fun nextPlaceColumn(): Int {
+        if (columns.size == 1) {
+            return 0
+        }
         return columns.withIndex().minByOrNull { it.value.height }?.index ?: 0
     }
 
@@ -28,7 +36,17 @@ internal class StaggeredColumnsInfo(
         items[staggeredPlacement.index] = staggeredPlacement
     }
 
-    fun minHeight(): Int = columns.minByOrNull { it.height }?.height ?: 0
+    fun minHeight(): Int {
+        if (columns.size == 1) {
+            return columns[0].height
+        }
+        return columns.minByOrNull { it.height }?.height ?: 0
+    }
 
-    fun maxHeight(): Int = columns.maxByOrNull { it.height }?.height ?: 0
+    fun maxHeight(): Int {
+        if (columns.size == 1) {
+            return columns[0].height
+        }
+        return columns.maxByOrNull { it.height }?.height ?: 0
+    }
 }
