@@ -6,7 +6,11 @@ internal class StaggeredPlacement(
     val left: Int,
     val bottom: Int,
 ) {
-    fun inViewPort(spacingPx: Int, viewportTop: Int, viewportBottom: Int): Boolean {
+    fun inViewPort(
+        spacingPx: Int,
+        viewportTop: Int,
+        viewportBottom: Int,
+    ): Boolean {
         val topWithSpacing = top - spacingPx
         val bottomWithSpacing = bottom + spacingPx
         return topWithSpacing in viewportTop..viewportBottom ||

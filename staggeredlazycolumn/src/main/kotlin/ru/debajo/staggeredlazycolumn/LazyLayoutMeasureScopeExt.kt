@@ -17,12 +17,15 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
     columns: Int,
     horizontalSpacing: Dp,
     verticalSpacing: Dp,
+    contentPadding: PaddingValues,
     columnsInfos: StaggeredColumnsInfo,
     state: StaggeredLazyColumnScrollState,
     provider: LazyLayoutItemProvider,
     result: MutableList<Pair<Placeable, StaggeredPlacement>>,
 ) {
     result.clear()
+    state.visibleItemsController.onStartMeasure()
+
     val itemWidth = ((constraints.maxWidth - horizontalSpacing.toPx() * (columns - 1)) / columns).roundToInt()
     val itemConstraints = Constraints(
         minWidth = 0,
@@ -30,8 +33,8 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         minHeight = 0,
         maxHeight = Constraints.Infinity
     )
-    val viewportTop = state.value
-    val viewportBottom = viewportTop + constraints.maxHeight
+    val viewportTop: Int = state.value - contentPadding.calculateTopPadding().toPx().roundToInt()
+    val viewportBottom: Int = viewportTop + constraints.maxHeight + contentPadding.calculateBottomPadding().toPx().roundToInt()
 
     val verticalSpacingPx = verticalSpacing.toPx().toInt()
     val firstVisibleItem = columnsInfos.getFirstVisible(viewportTop, verticalSpacingPx)
@@ -49,7 +52,13 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
                 }
                 val bottom = top + placeable.height
                 val placeableAt = StaggeredPlacement(index = index, top = top, left = left, bottom = bottom)
-                if (placeableAt.inViewPort(verticalSpacingPx, viewportTop, viewportBottom)) {
+                if (placeableAt.inViewPort(
+                        spacingPx = verticalSpacingPx,
+                        viewportTop = viewportTop,
+                        viewportBottom = viewportBottom,
+                    )
+                ) {
+                    state.visibleItemsController.addVisibleItem(placeableAt, provider)
                     result.add(placeable to placeableAt)
                 }
                 columnsInfos.add(column, placeableAt)
@@ -61,7 +70,14 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
             }
         } else {
             val placeable = measure(index, itemConstraints).first()
-            if (item.inViewPort(verticalSpacingPx, viewportTop, viewportBottom)) {
+            if (
+                item.inViewPort(
+                    spacingPx = verticalSpacingPx,
+                    viewportTop = viewportTop,
+                    viewportBottom = viewportBottom,
+                )
+            ) {
+                state.visibleItemsController.addVisibleItem(item, provider)
                 result.add(placeable to item)
             }
             if (item.top - verticalSpacingPx > viewportBottom) {
@@ -69,6 +85,15 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
             }
         }
     }
+
+    state.visibleItemsController.onEndMeasure(
+        viewportWidth = constraints.maxWidth,
+        viewportHeight = constraints.maxHeight,
+        provider = provider,
+        afterContentPadding = contentPadding.calculateTopPadding().toPx().roundToInt(),
+        beforeContentPadding = contentPadding.calculateBottomPadding().toPx().roundToInt(),
+    )
+
     if (columnsInfos.measuredItems == provider.itemCount) {
         state.maxValue = columnsInfos.maxHeight() - constraints.maxHeight
     }

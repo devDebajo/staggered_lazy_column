@@ -89,3 +89,17 @@ class StaggeredLazyColumnScope : LazyLayoutItemProvider {
         return null
     }
 }
+
+inline fun <T> StaggeredLazyColumnScope.items(
+    items: List<T>,
+    noinline key: ((item: T) -> Any)? = null,
+    noinline contentType: (item: T) -> Any? = { null },
+    crossinline itemContent: @Composable (item: T) -> Unit
+) {
+    items(
+        count = items.size,
+        key = if (key != null) { index: Int -> key(items[index]) } else null,
+        contentType = { index: Int -> contentType(items[index]) },
+        itemContent = { itemContent(items[it]) }
+    )
+}

@@ -1,6 +1,7 @@
 package ru.debajo.staggeredlazycolumn
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -13,7 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.filterNotNull
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,14 +67,24 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             ) { contentPadding ->
+                val state = rememberStaggeredLazyColumnState()
+                LaunchedEffect(key1 = Unit, block = {
+                    snapshotFlow { state.layoutInfo.viewportStartOffset }
+                        .filterNotNull()
+                        .collect {
+                            Log.d("qwerty", it.toString())
+                        }
+                })
+
                 StaggeredLazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    columns = StaggeredLazyColumnCells.Fixed(3),
+                    columns = StaggeredLazyColumnCells.Fixed(1),
+                    state = state,
                     horizontalSpacing = 8.dp,
                     verticalSpacing = 8.dp,
                     contentPadding = PaddingValues(
                         top = contentPadding.calculateTopPadding() + 8.dp,
-                        bottom = contentPadding.calculateBottomPadding() + 8.dp,
+                        bottom = contentPadding.calculateBottomPadding() + 80.dp,
                         start = contentPadding.calculateStartPadding(layoutDirection) + 16.dp,
                         end = contentPadding.calculateEndPadding(layoutDirection) + 16.dp,
                     )
