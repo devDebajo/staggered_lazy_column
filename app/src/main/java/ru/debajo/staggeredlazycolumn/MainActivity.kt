@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val items = (0 until 40).map {
+        val items = (0 until 4000).map {
             Color(
                 Random.nextInt(255),
                 Random.nextInt(255),
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                     horizontalSpacing = 8.dp,
                     verticalSpacing = 8.dp,
                     contentPadding = PaddingValues(
-                        top = contentPadding.calculateTopPadding() + 80.dp,
+                        top = contentPadding.calculateTopPadding() + 8.dp,
                         bottom = contentPadding.calculateBottomPadding() + 8.dp,
                         start = contentPadding.calculateStartPadding(layoutDirection) + 16.dp,
                         end = contentPadding.calculateEndPadding(layoutDirection) + 16.dp,

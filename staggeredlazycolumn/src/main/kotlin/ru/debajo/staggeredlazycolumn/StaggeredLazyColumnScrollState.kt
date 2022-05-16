@@ -34,7 +34,7 @@ class StaggeredLazyColumnScrollState(initial: Int) : ScrollableState {
     var firstVisibleItemScrollOffset: Int by mutableStateOf(0)
         internal set
 
-    val layoutInfo: LazyListLayoutInfo get() = visibleItemsController.value
+    internal val layoutInfo: LazyListLayoutInfo get() = visibleItemsController.value
 
     val interactionSource: InteractionSource get() = internalInteractionSource
 

@@ -45,7 +45,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
     val viewportTop: Int = state.value
     val viewportBottom: Int = viewportTop + constraints.maxHeight
 
-    val verticalSpacingPx = verticalSpacing.toPx().toInt()
+    val verticalSpacingPx = verticalSpacing.roundToPx()
     val firstVisibleItem = columnsInfos.getFirstVisible(viewportTop, verticalSpacingPx)
     val startIndex = firstVisibleItem?.index ?: columnsInfos.measuredItems
     for (index in startIndex until provider.itemCount) {
@@ -93,14 +93,14 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         }
     }
 
-//    val firstElement = result.minByOrNull { it.second.index }
-//    if (firstElement != null) {
-//        state.firstVisibleItemIndex = firstElement.second.index
-//        state.firstVisibleItemScrollOffset = viewportTop - firstElement.second.top
-//    } else {
-//        state.firstVisibleItemIndex = 0
-//        state.firstVisibleItemScrollOffset = 0
-//    }
+    val firstElement = result.minByOrNull { it.second.index }
+    if (firstElement != null) {
+        state.firstVisibleItemIndex = firstElement.second.index
+        state.firstVisibleItemScrollOffset = viewportTop - firstElement.second.top
+    } else {
+        state.firstVisibleItemIndex = 0
+        state.firstVisibleItemScrollOffset = 0
+    }
 
 //    state.visibleItemsController.onEndMeasure(
 //        viewportWidth = constraints.maxWidth,
@@ -127,7 +127,7 @@ internal fun LazyLayoutMeasureScope.calculateColumnsCount(
         is StaggeredLazyColumnCells.Fixed -> columns.columns
         is StaggeredLazyColumnCells.Adaptive -> {
             var availableSpacePx = constraints.maxWidth - contentPadding.calculateHorizontalPadding(layoutDirection).toPx()
-            val itemMinWidthPx = columns.minWidth.toPx().roundToInt()
+            val itemMinWidthPx = columns.minWidth.roundToPx()
             val spacingPx = horizontalSpacing.toPx()
             var result = 0
             do {
