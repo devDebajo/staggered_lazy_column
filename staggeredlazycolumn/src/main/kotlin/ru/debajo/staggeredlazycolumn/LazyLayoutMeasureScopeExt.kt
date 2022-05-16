@@ -2,6 +2,8 @@ package ru.debajo.staggeredlazycolumn
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.lazy.layout.LazyLayoutItemProvider
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.ui.layout.Placeable
@@ -26,7 +28,14 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
     result.clear()
     state.visibleItemsController.onStartMeasure()
 
-    val itemWidth = ((constraints.maxWidth - horizontalSpacing.toPx() * (columns - 1)) / columns).roundToInt()
+    val startPadding = contentPadding.calculateStartPadding(layoutDirection).roundToPx()
+    val endPadding = contentPadding.calculateEndPadding(layoutDirection).roundToPx()
+    val topPadding = contentPadding.calculateTopPadding().roundToPx()
+    val bottomPadding = contentPadding.calculateBottomPadding().roundToPx()
+    val totalHorizontalPadding = startPadding + endPadding
+
+    val availableWidth = constraints.maxWidth - totalHorizontalPadding
+    val itemWidth = ((availableWidth - horizontalSpacing.toPx() * (columns - 1)) / columns).roundToInt()
     val itemConstraints = Constraints(
         minWidth = 0,
         maxWidth = itemWidth,
@@ -45,16 +54,14 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
             if (columnsInfos.minHeight() < viewportBottom) {
                 val placeable = measure(index, itemConstraints).first()
                 val column = columnsInfos.nextPlaceColumn()
-                val left = column * itemWidth + column * horizontalSpacing.toPx().toInt()
+                val left = column * itemWidth + column * horizontalSpacing.roundToPx() + startPadding
                 var top = columnsInfos.columnHeight(column)
-                if (top > 0) {
-                    top += verticalSpacingPx
-                }
+                val itemTopOffset = if (top > 0) verticalSpacingPx else topPadding
+                top += itemTopOffset
                 val bottom = top + placeable.height
-                val placeableAt = StaggeredPlacement(index = index, top = top, left = left, bottom = bottom)
+                val placeableAt = StaggeredPlacement(index = index, top = top, left = left, bottom = bottom, topOffset = itemTopOffset)
                 if (
                     placeableAt.inViewPort(
-                        spacingPx = verticalSpacingPx,
                         viewportTop = viewportTop,
                         viewportBottom = viewportBottom,
                     )
@@ -73,7 +80,6 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
             val placeable = measure(index, itemConstraints).first()
             if (
                 item.inViewPort(
-                    spacingPx = verticalSpacingPx,
                     viewportTop = viewportTop,
                     viewportBottom = viewportBottom,
                 )
@@ -87,25 +93,25 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         }
     }
 
-    val firstElement = result.minByOrNull { it.second.index }
-    if (firstElement != null) {
-        state.firstVisibleItemIndex = firstElement.second.index
-        state.firstVisibleItemScrollOffset = viewportTop - firstElement.second.top
-    } else {
-        state.firstVisibleItemIndex = 0
-        state.firstVisibleItemScrollOffset = 0
-    }
+//    val firstElement = result.minByOrNull { it.second.index }
+//    if (firstElement != null) {
+//        state.firstVisibleItemIndex = firstElement.second.index
+//        state.firstVisibleItemScrollOffset = viewportTop - firstElement.second.top
+//    } else {
+//        state.firstVisibleItemIndex = 0
+//        state.firstVisibleItemScrollOffset = 0
+//    }
 
-    state.visibleItemsController.onEndMeasure(
-        viewportWidth = constraints.maxWidth,
-        viewportHeight = constraints.maxHeight,
-        provider = provider,
-        afterContentPadding = contentPadding.calculateTopPadding().toPx().roundToInt(),
-        beforeContentPadding = contentPadding.calculateBottomPadding().toPx().roundToInt(),
-    )
+//    state.visibleItemsController.onEndMeasure(
+//        viewportWidth = constraints.maxWidth,
+//        viewportHeight = constraints.maxHeight,
+//        provider = provider,
+//        afterContentPadding = contentPadding.calculateTopPadding().roundToPx(),
+//        beforeContentPadding = contentPadding.calculateBottomPadding().roundToPx(),
+//    )
 
     if (columnsInfos.measuredItems == provider.itemCount) {
-        state.maxValue = columnsInfos.maxHeight() - constraints.maxHeight
+        state.maxValue = columnsInfos.maxHeight() - constraints.maxHeight + bottomPadding
     }
 }
 

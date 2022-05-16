@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.runtime.*
@@ -73,7 +72,6 @@ fun StaggeredLazyColumn(
 
     LazyLayout(
         modifier = modifier
-            .padding(contentPadding)
             .scrollable(
                 state = state,
                 orientation = Orientation.Vertical,

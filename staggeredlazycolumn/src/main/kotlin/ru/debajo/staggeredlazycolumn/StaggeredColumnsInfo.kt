@@ -14,10 +14,13 @@ internal class StaggeredColumnsInfo(
         }
     }
 
-    fun getFirstVisible(y: Int, verticalSpacingPx: Int): StaggeredPlacement? {
-        return items.values.filter { item ->
-            y in (item.top - verticalSpacingPx)..(item.bottom + verticalSpacingPx)
-        }.minByOrNull { it.top }
+    fun getFirstVisible(
+        y: Int,
+        verticalSpacingPx: Int,
+    ): StaggeredPlacement? {
+        return items.values
+            .filter { item -> y in (item.top - item.topOffset)..(item.bottom + verticalSpacingPx) }
+            .minByOrNull { it.top }
     }
 
     fun nextPlaceColumn(): Int {
