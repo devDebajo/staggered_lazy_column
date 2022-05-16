@@ -47,7 +47,6 @@ For get more scrolling performance your state should be `@Stable` type\
 More info about stable types and skipping recompositions when input haven't changed [here](https://developer.android.com/jetpack/compose/lifecycle#skipping)
 
 # Roadmap
-* Access to first visible index and offset
 * Scrolling to item by index
 * Visible items info
 * Bugfixes
