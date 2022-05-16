@@ -1,19 +1,23 @@
 package ru.debajo.staggeredlazycolumn
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.lazy.LazyListLayoutInfo
+import androidx.compose.foundation.lazy.layout.LazyLayoutPrefetchState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlin.math.roundToInt
 
 @Stable
+@OptIn(ExperimentalFoundationApi::class)
 class StaggeredLazyColumnScrollState(initial: Int) : ScrollableState {
 
+    internal val prefetchState: LazyLayoutPrefetchState = LazyLayoutPrefetchState()
     internal val visibleItemsController = StaggeredLazyColumnVisibleItemsController(this)
 
     var value: Int by mutableStateOf(initial, structuralEqualityPolicy())

@@ -6,7 +6,10 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.Placeable
@@ -27,10 +30,14 @@ fun StaggeredLazyColumn(
     content: StaggeredLazyColumnScope.() -> Unit
 ) {
     val latestContent = rememberUpdatedState(content)
-    val provider by remember {
-        derivedStateOf {
-            StaggeredLazyColumnScope().apply(latestContent.value)
-        }
+    val provider = remember {
+        StaggeredLazyColumnItemProvider(
+            derivedStateOf {
+                StaggeredLazyColumnScope()
+                    .apply(latestContent.value)
+                    .intervals
+            }
+        )
     }
 
     val calculatedColumns = remember { CalculatedColumns() }
@@ -79,6 +86,7 @@ fun StaggeredLazyColumn(
                 interactionSource = state.internalInteractionSource,
                 enabled = userScrollEnabled,
             ),
+        prefetchState = state.prefetchState,
         itemProvider = provider,
         measurePolicy = measurePolicy,
     )
