@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,11 +40,6 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val state = rememberStaggeredLazyColumnState()
-            LaunchedEffect(key1 = state, block = {
-                delay(2000)
-                state.animateScrollToItem(1000, 1000)
-            })
             val layoutDirection = LocalLayoutDirection.current
             val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
             Scaffold(
@@ -71,7 +64,6 @@ class MainActivity : ComponentActivity() {
                 }
             ) { contentPadding ->
                 StaggeredLazyColumn(
-                    state = state,
                     modifier = Modifier.fillMaxSize(),
                     columns = StaggeredLazyColumnCells.Fixed(4),
                     horizontalSpacing = 8.dp,

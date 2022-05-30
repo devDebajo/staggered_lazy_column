@@ -121,7 +121,7 @@ class StaggeredLazyColumnScrollState internal constructor(initial: Int) : Scroll
                             }
                         }
                     } catch (itemFoundSignal: ItemFoundSignal) {
-                        val delta = itemFoundSignal.targetItem.top - scroll
+                        val delta = itemFoundSignal.targetItem.top - scrollOffset - scroll
                         var prevValue = 0f
                         val durationPerPixel = iterationDuration / iterationPixels
                         anim.copy(value = 0f).animateTo(
