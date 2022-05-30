@@ -19,9 +19,14 @@ import kotlin.math.roundToInt
 
 @Stable
 @OptIn(ExperimentalFoundationApi::class)
-class StaggeredLazyColumnScrollState internal constructor(initial: Int) : ScrollableState {
+class StaggeredLazyColumnScrollState internal constructor(
+    internal val firstVisibleItemIndexInner: Int = 0,
+    internal val firstVisibleItemScrollOffsetInner: Int = 0,
+) : ScrollableState {
 
-    var scroll: Int by mutableStateOf(initial, structuralEqualityPolicy())
+    internal var firstHandled: Boolean = false
+
+    var scroll: Int by mutableStateOf(0, structuralEqualityPolicy())
         private set
 
     var maxValue: Int
@@ -59,6 +64,10 @@ class StaggeredLazyColumnScrollState internal constructor(initial: Int) : Scroll
         scroll += consumedInt
         accumulator = consumed - consumedInt
         if (changed) consumed else it
+    }
+
+    init {
+        firstHandled = firstVisibleItemIndexInner + firstVisibleItemScrollOffsetInner == 0
     }
 
     override suspend fun scroll(
@@ -145,6 +154,10 @@ class StaggeredLazyColumnScrollState internal constructor(initial: Int) : Scroll
         }
     }
 
+    internal fun setScroll(scroll: Int) {
+        this.scroll = scroll.coerceIn(0, maxValue)
+    }
+
     private fun calculateScrollToOffsetDelta(offset: Int): Float {
         return when {
             offset == scroll -> return 0f
@@ -164,15 +177,26 @@ class StaggeredLazyColumnScrollState internal constructor(initial: Int) : Scroll
 
     companion object {
         val Saver: Saver<StaggeredLazyColumnScrollState, *> = Saver(
-            save = { it.scroll },
-            restore = { StaggeredLazyColumnScrollState(it) }
+            save = { listOf(it.firstVisibleItemIndex, it.firstVisibleItemScrollOffset) },
+            restore = {
+                StaggeredLazyColumnScrollState(
+                    firstVisibleItemIndexInner = it[0],
+                    firstVisibleItemScrollOffsetInner = it[1]
+                )
+            }
         )
     }
 }
 
 @Composable
-fun rememberStaggeredLazyColumnState(initialScroll: Int = 0): StaggeredLazyColumnScrollState {
+fun rememberStaggeredLazyColumnState(
+    initialFirstVisibleItemIndex: Int = 0,
+    initialFirstVisibleItemScrollOffset: Int = 0
+): StaggeredLazyColumnScrollState {
     return rememberSaveable(saver = StaggeredLazyColumnScrollState.Saver) {
-        StaggeredLazyColumnScrollState(initial = initialScroll)
+        StaggeredLazyColumnScrollState(
+            firstVisibleItemIndexInner = initialFirstVisibleItemIndex,
+            firstVisibleItemScrollOffsetInner = initialFirstVisibleItemScrollOffset,
+        )
     }
 }
