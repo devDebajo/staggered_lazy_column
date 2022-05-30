@@ -3,7 +3,6 @@ package ru.debajo.staggeredlazycolumn
 import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.runtime.Stable
 
-@Stable
 internal class StaggeredLazyColumnItemInfo : LazyListItemInfo {
     override var index: Int = -1
         private set
@@ -28,26 +27,24 @@ internal class StaggeredLazyColumnItemInfo : LazyListItemInfo {
         this.offset = offset
         this.size = size
     }
+}
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+@Stable
+internal data class StaggeredLazyColumnItemInfoImmutable(
+    override val index: Int,
+    override val key: Any,
+    override val offset: Int,
+    override val size: Int,
+) : LazyListItemInfo {
+    constructor(mutable: StaggeredLazyColumnItemInfo) : this(
+        index = mutable.index,
+        key = mutable.key,
+        offset = mutable.offset,
+        size = mutable.size,
+    )
+}
 
-        other as StaggeredLazyColumnItemInfo
-
-        if (index != other.index) return false
-        if (key != other.key) return false
-        if (offset != other.offset) return false
-        if (size != other.size) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = index
-        result = 31 * result + key.hashCode()
-        result = 31 * result + offset
-        result = 31 * result + size
-        return result
-    }
+internal fun LazyListItemInfo.asImmutable(): LazyListItemInfo {
+    this as StaggeredLazyColumnItemInfo
+    return StaggeredLazyColumnItemInfoImmutable(this)
 }

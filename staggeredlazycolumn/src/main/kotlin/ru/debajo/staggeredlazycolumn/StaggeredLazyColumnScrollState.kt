@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.layout.LazyLayoutPrefetchState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.roundToInt
 
@@ -46,10 +47,15 @@ class StaggeredLazyColumnScrollState internal constructor(
 
     val interactionSource: InteractionSource get() = internalInteractionSource
 
+    /**
+     * Doesn't use observable compose [State]
+     */
+    val layoutInfo: LazyListLayoutInfo
+        get() = visibleItemsController.snapshot()
+
     internal val prefetchState: LazyLayoutPrefetchState = LazyLayoutPrefetchState()
     internal val visibleItemsController = StaggeredLazyColumnVisibleItemsController(this)
     internal var columnsInfo: StaggeredColumnsInfo = StaggeredColumnsInfo()
-    internal val layoutInfo: LazyListLayoutInfo get() = visibleItemsController.value
     internal val internalInteractionSource: MutableInteractionSource = MutableInteractionSource()
 
     private var _maxValueState = mutableStateOf(Int.MAX_VALUE, structuralEqualityPolicy())
@@ -69,6 +75,8 @@ class StaggeredLazyColumnScrollState internal constructor(
     init {
         firstHandled = firstVisibleItemIndexInner + firstVisibleItemScrollOffsetInner == 0
     }
+
+    fun observeLayoutInfo(): Flow<LazyListLayoutInfo> = visibleItemsController.observe()
 
     fun canScroll(direction: ScrollDirection): Boolean {
         return when (direction) {

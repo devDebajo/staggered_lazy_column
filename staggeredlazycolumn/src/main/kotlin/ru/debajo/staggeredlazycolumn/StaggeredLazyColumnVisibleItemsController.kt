@@ -4,9 +4,18 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListLayoutInfo
 import androidx.compose.foundation.lazy.layout.LazyLayoutItemProvider
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.ui.unit.IntSize
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Stable
@@ -14,16 +23,25 @@ internal class StaggeredLazyColumnVisibleItemsController(
     private val state: StaggeredLazyColumnScrollState,
 ) {
     private val cache = StaggeredLazyColumnItemInfoCache()
-    private val valueMutable = mutableStateOf(
-        value = StaggeredLazyColumnLayoutInfo(),
-        policy = neverEqualPolicy()
-    )
+    private val lazyListLayoutInfo: StaggeredLazyColumnLayoutInfo = StaggeredLazyColumnLayoutInfo()
+    private val onMeasureEndListeners: MutableSet<() -> Unit> = Collections.synchronizedSet(mutableSetOf())
 
-    val value: LazyListLayoutInfo get() = valueMutable.value
+    fun observe(
+        context: CoroutineContext = Default
+    ): Flow<LazyListLayoutInfo> {
+        return callbackFlow {
+            val listener = OnMeasureEndListener(context, this, ::snapshot)
+            onMeasureEndListeners.add(listener)
+            awaitClose {
+                onMeasureEndListeners.remove(listener)
+                this.cancel()
+            }
+        }.flowOn(context)
+    }
 
     fun onStartMeasure() {
         cache.free()
-        valueMutable.value.visibleItemsInfoMutable.clear()
+        lazyListLayoutInfo.visibleItemsInfoMutable.clear()
     }
 
     fun addVisibleItem(placeableAt: StaggeredPlacement, provider: LazyLayoutItemProvider) {
@@ -33,7 +51,7 @@ internal class StaggeredLazyColumnVisibleItemsController(
             offset = placeableAt.top,
             size = placeableAt.bottom - placeableAt.top
         )
-        valueMutable.value.visibleItemsInfoMutable.add(itemInfo)
+        lazyListLayoutInfo.visibleItemsInfoMutable.add(itemInfo)
     }
 
     fun onEndMeasure(
@@ -41,15 +59,33 @@ internal class StaggeredLazyColumnVisibleItemsController(
         viewportHeight: Int,
         provider: LazyLayoutItemProvider,
         afterContentPadding: Int,
-        beforeContentPadding: Int
+        beforeContentPadding: Int,
     ) {
-        valueMutable.value.viewportStartOffset = state.scroll
-        valueMutable.value.viewportEndOffset = state.scroll + viewportHeight
-        valueMutable.value.totalItemsCount = provider.itemCount
-        valueMutable.value.afterContentPadding = afterContentPadding
-        valueMutable.value.beforeContentPadding = beforeContentPadding
-        valueMutable.value.viewportSize = IntSize(viewportWidth, viewportHeight)
+        with(lazyListLayoutInfo) {
+            viewportStartOffset = state.scroll
+            viewportEndOffset = state.scroll + viewportHeight
+            totalItemsCount = provider.itemCount
+            this.afterContentPadding = afterContentPadding
+            this.beforeContentPadding = beforeContentPadding
+            viewportSize = IntSize(viewportWidth, viewportHeight)
+        }
+        onMeasureEndListeners.forEach { it() }
+    }
 
-        valueMutable.value = valueMutable.value // invalidate observable state
+    internal fun snapshot(): LazyListLayoutInfo = lazyListLayoutInfo.asImmutable()
+
+    private class OnMeasureEndListener(
+        private val context: CoroutineContext,
+        private val producerScope: ProducerScope<LazyListLayoutInfo>,
+        private val getSnapshot: () -> LazyListLayoutInfo,
+    ) : () -> Unit {
+        private var job: Job? = null
+
+        override fun invoke() {
+            job?.cancel()
+            job = producerScope.launch(context) {
+                producerScope.send(getSnapshot())
+            }
+        }
     }
 }

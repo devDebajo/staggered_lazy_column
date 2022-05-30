@@ -113,13 +113,13 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         state.firstVisibleItemScrollOffset = 0
     }
 
-//    state.visibleItemsController.onEndMeasure(
-//        viewportWidth = constraints.maxWidth,
-//        viewportHeight = constraints.maxHeight,
-//        provider = provider,
-//        afterContentPadding = contentPadding.calculateTopPadding().roundToPx(),
-//        beforeContentPadding = contentPadding.calculateBottomPadding().roundToPx(),
-//    )
+    state.visibleItemsController.onEndMeasure(
+        viewportWidth = constraints.maxWidth,
+        viewportHeight = constraints.maxHeight,
+        provider = provider,
+        afterContentPadding = contentPadding.calculateTopPadding().roundToPx(),
+        beforeContentPadding = contentPadding.calculateBottomPadding().roundToPx(),
+    )
 
     if (columnsInfos.measuredItems == provider.itemCount) {
         state.maxValue = columnsInfos.maxHeight() - constraints.maxHeight + bottomPadding
