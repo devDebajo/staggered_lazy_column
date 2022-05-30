@@ -46,10 +46,12 @@ internal class StaggeredColumnsInfo(
         return columns.minByOrNull { it.height }?.height ?: 0
     }
 
-    fun maxHeight(): Int {
+    fun maxHeight(): Int = columns.getOrNull(maxColumnIndex())?.height ?: 0
+
+    fun maxColumnIndex(): Int {
         if (columns.size == 1) {
             return columns[0].height
         }
-        return columns.maxByOrNull { it.height }?.height ?: 0
+        return columns.withIndex().maxByOrNull { it.value.height }?.index ?: -1
     }
 }

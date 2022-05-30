@@ -43,8 +43,8 @@ internal class StaggeredLazyColumnVisibleItemsController(
         afterContentPadding: Int,
         beforeContentPadding: Int
     ) {
-        valueMutable.value.viewportStartOffset = state.value
-        valueMutable.value.viewportEndOffset = state.value + viewportHeight
+        valueMutable.value.viewportStartOffset = state.scroll
+        valueMutable.value.viewportEndOffset = state.scroll + viewportHeight
         valueMutable.value.totalItemsCount = provider.itemCount
         valueMutable.value.afterContentPadding = afterContentPadding
         valueMutable.value.beforeContentPadding = beforeContentPadding

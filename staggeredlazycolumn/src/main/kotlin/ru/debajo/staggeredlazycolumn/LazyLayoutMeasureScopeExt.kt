@@ -42,7 +42,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         minHeight = 0,
         maxHeight = Constraints.Infinity
     )
-    val viewportTop: Int = state.value
+    val viewportTop: Int = state.scroll
     val viewportBottom: Int = viewportTop + constraints.maxHeight
 
     val verticalSpacingPx = verticalSpacing.roundToPx()
