@@ -63,7 +63,9 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             ) { contentPadding ->
+                val state = rememberStaggeredLazyColumnState()
                 StaggeredLazyColumn(
+                    state = state,
                     modifier = Modifier.fillMaxSize(),
                     columns = StaggeredLazyColumnCells.Fixed(4),
                     horizontalSpacing = 8.dp,

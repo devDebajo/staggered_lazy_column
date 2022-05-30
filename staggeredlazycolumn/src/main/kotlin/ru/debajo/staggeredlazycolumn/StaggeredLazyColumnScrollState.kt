@@ -70,6 +70,13 @@ class StaggeredLazyColumnScrollState internal constructor(
         firstHandled = firstVisibleItemIndexInner + firstVisibleItemScrollOffsetInner == 0
     }
 
+    fun canScroll(direction: ScrollDirection): Boolean {
+        return when (direction) {
+            ScrollDirection.DOWN -> scroll > 0
+            ScrollDirection.UP -> scroll < maxValue
+        }
+    }
+
     override suspend fun scroll(
         scrollPriority: MutatePriority,
         block: suspend ScrollScope.() -> Unit
@@ -166,6 +173,8 @@ class StaggeredLazyColumnScrollState internal constructor(
             else -> offset - scroll.toFloat()
         }
     }
+
+    enum class ScrollDirection { DOWN, UP }
 
     enum class ScrollSpeed(val iterationDuration: Int) {
         FAST(10),
