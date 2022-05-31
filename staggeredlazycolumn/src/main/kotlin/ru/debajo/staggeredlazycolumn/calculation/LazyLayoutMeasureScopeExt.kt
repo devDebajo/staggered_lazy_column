@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.calculation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,11 +9,13 @@ import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
+import ru.debajo.staggeredlazycolumn.state.StaggeredLazyColumnScrollState
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class)
+@ExperimentalFoundationApi
 internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
     constraints: Constraints,
     columns: Int,
@@ -127,7 +129,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
 }
 
 // Should not call every measure
-@OptIn(ExperimentalFoundationApi::class)
+@ExperimentalFoundationApi
 internal fun LazyLayoutMeasureScope.calculateColumnsCount(
     contentPadding: PaddingValues,
     horizontalSpacing: Dp,

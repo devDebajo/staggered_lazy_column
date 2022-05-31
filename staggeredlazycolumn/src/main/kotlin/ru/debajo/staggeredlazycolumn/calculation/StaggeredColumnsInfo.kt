@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.calculation
 
 internal class StaggeredColumnsInfo(
     var columns: List<StaggeredColumnInfo> = emptyList(),

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Stable
 
 @Stable
 @OptIn(ExperimentalFoundationApi::class)
-class StaggeredLazyColumnScope {
+class StaggeredLazyColumnScope internal constructor() {
 
     internal val intervals = mutableListOf<Interval>()
 

@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.visibleitems
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListLayoutInfo
@@ -7,18 +7,19 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.IntSize
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import ru.debajo.staggeredlazycolumn.calculation.StaggeredPlacement
+import ru.debajo.staggeredlazycolumn.state.StaggeredLazyColumnScrollState
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-@OptIn(ExperimentalFoundationApi::class)
 @Stable
+@ExperimentalFoundationApi
 internal class StaggeredLazyColumnVisibleItemsController(
     private val state: StaggeredLazyColumnScrollState,
 ) {
@@ -32,10 +33,7 @@ internal class StaggeredLazyColumnVisibleItemsController(
         return callbackFlow {
             val listener = OnMeasureEndListener(context, this, ::snapshot)
             onMeasureEndListeners.add(listener)
-            awaitClose {
-                onMeasureEndListeners.remove(listener)
-                this.cancel()
-            }
+            awaitClose { onMeasureEndListeners.remove(listener) }
         }.flowOn(context)
     }
 

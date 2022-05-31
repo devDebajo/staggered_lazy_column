@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.calculation
 
 internal class StaggeredColumnInfo(
     val items: MutableList<StaggeredPlacement> = mutableListOf(),

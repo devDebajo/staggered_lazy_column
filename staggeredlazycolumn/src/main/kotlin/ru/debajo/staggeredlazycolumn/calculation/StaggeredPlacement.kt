@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.calculation
 
 internal class StaggeredPlacement(
     val index: Int,

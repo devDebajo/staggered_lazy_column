@@ -1,13 +1,14 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.calculation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.layout.LazyLayoutItemProvider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
+import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnScope
 
 @Stable
-@OptIn(ExperimentalFoundationApi::class)
+@ExperimentalFoundationApi
 internal class StaggeredLazyColumnItemProvider(
     private val intervals: State<List<StaggeredLazyColumnScope.Interval>>
 ) : LazyLayoutItemProvider {

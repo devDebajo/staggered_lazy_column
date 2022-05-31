@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.state
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -15,6 +15,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.flow.Flow
+import ru.debajo.staggeredlazycolumn.calculation.StaggeredColumnsInfo
+import ru.debajo.staggeredlazycolumn.calculation.StaggeredPlacement
+import ru.debajo.staggeredlazycolumn.visibleitems.StaggeredLazyColumnVisibleItemsController
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.roundToInt
 
@@ -53,6 +56,9 @@ class StaggeredLazyColumnScrollState internal constructor(
     val layoutInfo: LazyListLayoutInfo
         get() = visibleItemsController.snapshot()
 
+    var scrollDirection: ScrollDirection by mutableStateOf(TODO())
+        private set
+
     internal val prefetchState: LazyLayoutPrefetchState = LazyLayoutPrefetchState()
     internal val visibleItemsController = StaggeredLazyColumnVisibleItemsController(this)
     internal var columnsInfo: StaggeredColumnsInfo = StaggeredColumnsInfo()
@@ -82,6 +88,7 @@ class StaggeredLazyColumnScrollState internal constructor(
         return when (direction) {
             ScrollDirection.DOWN -> scroll > 0
             ScrollDirection.UP -> scroll < maxValue
+            ScrollDirection.NONE -> true
         }
     }
 
@@ -182,7 +189,7 @@ class StaggeredLazyColumnScrollState internal constructor(
         }
     }
 
-    enum class ScrollDirection { DOWN, UP }
+    enum class ScrollDirection { DOWN, UP, NONE }
 
     enum class ScrollSpeed(val iterationDuration: Int) {
         FAST(10),
@@ -206,6 +213,7 @@ class StaggeredLazyColumnScrollState internal constructor(
 }
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 fun rememberStaggeredLazyColumnState(
     initialFirstVisibleItemIndex: Int = 0,
     initialFirstVisibleItemScrollOffset: Int = 0

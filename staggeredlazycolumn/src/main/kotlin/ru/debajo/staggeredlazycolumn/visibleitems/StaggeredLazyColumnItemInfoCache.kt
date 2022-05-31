@@ -1,4 +1,4 @@
-package ru.debajo.staggeredlazycolumn
+package ru.debajo.staggeredlazycolumn.visibleitems
 
 internal class StaggeredLazyColumnItemInfoCache {
     private val cache: MutableList<Wrapper> = mutableListOf()
