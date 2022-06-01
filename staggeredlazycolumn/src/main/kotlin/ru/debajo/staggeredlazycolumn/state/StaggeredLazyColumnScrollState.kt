@@ -64,10 +64,10 @@ class StaggeredLazyColumnScrollState internal constructor(
     internal var columnsInfo: StaggeredColumnsInfo = StaggeredColumnsInfo()
     internal val internalInteractionSource: MutableInteractionSource = MutableInteractionSource()
 
-    private var _maxValueState = mutableStateOf(Int.MAX_VALUE, structuralEqualityPolicy())
+    private var _maxValueState: MutableState<Int> = mutableStateOf(Int.MAX_VALUE, structuralEqualityPolicy())
     private var accumulator: Float = 0f
 
-    private val scrollableState = ScrollableState {
+    private val scrollableState: ScrollableState = ScrollableState {
         val absolute = (scroll + it + accumulator)
         val newValue = absolute.coerceIn(0f, maxValue.toFloat())
         val changed = absolute != newValue
