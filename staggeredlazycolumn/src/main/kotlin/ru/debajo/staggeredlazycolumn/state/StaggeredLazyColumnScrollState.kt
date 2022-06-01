@@ -56,7 +56,7 @@ class StaggeredLazyColumnScrollState internal constructor(
     val layoutInfo: LazyListLayoutInfo
         get() = visibleItemsController.snapshot()
 
-    var scrollDirection: ScrollDirection by mutableStateOf(TODO())
+    var scrollDirection: ScrollDirection? by mutableStateOf(null)
         private set
 
     internal val prefetchState: LazyLayoutPrefetchState = LazyLayoutPrefetchState()
@@ -73,6 +73,9 @@ class StaggeredLazyColumnScrollState internal constructor(
         val changed = absolute != newValue
         val consumed = newValue - scroll
         val consumedInt = consumed.roundToInt()
+        if (consumedInt != 0) {
+            scrollDirection = if (consumedInt > 0) ScrollDirection.UP else ScrollDirection.DOWN
+        }
         scroll += consumedInt
         accumulator = consumed - consumedInt
         if (changed) consumed else it
@@ -88,7 +91,6 @@ class StaggeredLazyColumnScrollState internal constructor(
         return when (direction) {
             ScrollDirection.DOWN -> scroll > 0
             ScrollDirection.UP -> scroll < maxValue
-            ScrollDirection.NONE -> true
         }
     }
 
@@ -189,7 +191,7 @@ class StaggeredLazyColumnScrollState internal constructor(
         }
     }
 
-    enum class ScrollDirection { DOWN, UP, NONE }
+    enum class ScrollDirection { DOWN, UP }
 
     enum class ScrollSpeed(val iterationDuration: Int) {
         FAST(10),
