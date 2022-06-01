@@ -11,6 +11,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
@@ -87,7 +88,8 @@ fun StaggeredLazyColumn(
                 reverseDirection = true,
                 interactionSource = state.internalInteractionSource,
                 enabled = userScrollEnabled,
-            ),
+            )
+            .clipToBounds(),
         prefetchState = state.prefetchState,
         itemProvider = provider,
         measurePolicy = measurePolicy,
