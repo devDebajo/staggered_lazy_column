@@ -6,12 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SmallTopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,7 +37,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val layoutDirection = LocalLayoutDirection.current
-            val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+            val state = rememberTopAppBarScrollState()
+            val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior(state) }
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize()

@@ -1,6 +1,7 @@
 package ru.debajo.staggeredlazycolumn.calculation
 
 internal class StaggeredColumnsInfo(
+    var topOffsetPx: Int = 0,
     var columns: List<StaggeredColumnInfo> = emptyList(),
     val items: MutableMap<Int, StaggeredPlacement> = mutableMapOf(),
 ) {

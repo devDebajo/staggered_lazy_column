@@ -33,6 +33,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
     val startPadding = contentPadding.calculateStartPadding(layoutDirection).roundToPx()
     val endPadding = contentPadding.calculateEndPadding(layoutDirection).roundToPx()
     val topPadding = contentPadding.calculateTopPadding().roundToPx()
+    columnsInfos.topOffsetPx = topPadding
     val bottomPadding = contentPadding.calculateBottomPadding().roundToPx()
     val totalHorizontalPadding = startPadding + endPadding
 
@@ -58,7 +59,7 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
                 val column = columnsInfos.nextPlaceColumn()
                 val left = column * itemWidth + column * horizontalSpacing.roundToPx() + startPadding
                 var top = columnsInfos.columnHeight(column)
-                val itemTopOffset = if (top > 0) verticalSpacingPx else topPadding
+                val itemTopOffset = if (top > 0) verticalSpacingPx else 0
                 top += itemTopOffset
                 val bottom = top + placeable.height
                 val placeableAt = StaggeredPlacement(index = index, top = top, left = left, bottom = bottom, topOffset = itemTopOffset)
@@ -119,8 +120,8 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         viewportWidth = constraints.maxWidth,
         viewportHeight = constraints.maxHeight,
         provider = provider,
-        afterContentPadding = contentPadding.calculateTopPadding().roundToPx(),
-        beforeContentPadding = contentPadding.calculateBottomPadding().roundToPx(),
+        afterContentPadding = topPadding,
+        beforeContentPadding = bottomPadding,
     )
 
     if (columnsInfos.measuredItems == provider.itemCount) {

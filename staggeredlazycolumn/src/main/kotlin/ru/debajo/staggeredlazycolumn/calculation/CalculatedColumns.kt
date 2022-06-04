@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnCells
 
 @ExperimentalFoundationApi
@@ -47,7 +48,7 @@ internal class CalculatedColumns {
             lastColumns = columns
         }
 
-        if (lastContentPadding != contentPadding) {
+        if (lastContentPadding?.horizontalChanged(contentPadding) != false) {
             saveSnapshot()
             return true
         }
@@ -68,5 +69,11 @@ internal class CalculatedColumns {
         }
 
         return false
+    }
+
+    private fun PaddingValues.horizontalChanged(newContentPadding: PaddingValues): Boolean {
+        val direction = LayoutDirection.Ltr
+        return newContentPadding.calculateLeftPadding(direction) != calculateLeftPadding(direction) ||
+                newContentPadding.calculateRightPadding(direction) != calculateRightPadding(direction)
     }
 }

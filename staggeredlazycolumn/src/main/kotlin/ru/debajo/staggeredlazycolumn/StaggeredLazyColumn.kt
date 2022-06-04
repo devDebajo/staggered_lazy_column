@@ -46,11 +46,12 @@ fun StaggeredLazyColumn(
     val calculatedColumns = remember { CalculatedColumns() }
     val columnsInfo = remember(provider) { StaggeredColumnsInfo().also { state.columnsInfo = it } }
     val result = remember { mutableListOf<Pair<Placeable, StaggeredPlacement>>() }
+    val latestContentPadding = rememberUpdatedState(contentPadding)
     val measurePolicy = remember<LazyLayoutMeasureScope.(Constraints) -> MeasureResult>(columnsInfo) {
         { constraints ->
             val currentColumnsCount = with(calculatedColumns) {
                 calculateIfNeed(
-                    contentPadding = contentPadding,
+                    contentPadding = latestContentPadding.value,
                     horizontalSpacing = horizontalSpacing,
                     constraints = constraints,
                     columns = columns,
@@ -68,11 +69,11 @@ fun StaggeredLazyColumn(
                 state = state,
                 provider = provider,
                 result = result,
-                contentPadding = contentPadding
+                contentPadding = latestContentPadding.value
             )
 
             layout(constraints.maxWidth, constraints.maxHeight) {
-                val offset = state.scroll
+                val offset = state.scroll - columnsInfo.topOffsetPx
                 result.forEach { (placeable, placeableAt) ->
                     placeable.placeRelative(placeableAt.left, placeableAt.top - offset)
                 }
