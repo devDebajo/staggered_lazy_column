@@ -1,6 +1,6 @@
 package ru.debajo.staggeredlazycolumn.calculation
 
-internal class StaggeredPlacement(
+internal data class StaggeredPlacement(
     val index: Int,
     val top: Int,
     val left: Int,
