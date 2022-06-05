@@ -120,9 +120,9 @@ class StaggeredLazyColumnScrollState internal constructor(
     ) {
         val itemInfo = columnsInfo.items[index]
         if (itemInfo != null) {
-            val offset = itemInfo.top + scrollOffset
-            if (offset != 0) {
-                animateScrollToOffset(offset, tween(scrollSpeed.iterationDuration, easing = LinearEasing))
+            val targetScroll = itemInfo.top + scrollOffset
+            if (targetScroll != scroll) {
+                animateScrollToOffset(targetScroll, tween(scrollSpeed.iterationDuration, easing = LinearEasing))
             }
             return
         }
