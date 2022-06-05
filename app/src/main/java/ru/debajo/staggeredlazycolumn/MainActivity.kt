@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,18 +29,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val items = (0 until 4000).map {
-            Color(
-                Random.nextInt(255),
-                Random.nextInt(255),
-                Random.nextInt(255),
-            ) to Random.nextInt(100, 200).dp
-        }
+        // Unfortunately, when StaggeredLazyColumn access to List<T> - this causes many recompositions and recalculations, so that we need to use Stable state
+        val items: List<Pair<Color, Dp>> by mutableStateOf(
+            (0 until 4000).map {
+                Color(
+                    Random.nextInt(255),
+                    Random.nextInt(255),
+                    Random.nextInt(255),
+                ) to Random.nextInt(100, 200).dp
+            }
+        )
 
         setContent {
             val layoutDirection = LocalLayoutDirection.current
-            val state = rememberTopAppBarScrollState()
-            val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior(state) }
+            val topAppBarScrollState = rememberTopAppBarScrollState()
+            val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarScrollState) }
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize()

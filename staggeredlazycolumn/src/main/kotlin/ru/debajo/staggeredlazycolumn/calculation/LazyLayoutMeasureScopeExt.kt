@@ -124,8 +124,13 @@ internal fun LazyLayoutMeasureScope.prepareItemsToPlace(
         beforeContentPadding = bottomPadding,
     )
 
-    if (columnsInfos.measuredItems == provider.itemCount) {
-        state.maxValue = (columnsInfos.maxHeight() - constraints.maxHeight + bottomPadding).coerceAtLeast(0)
+    state.maxValue = when {
+        provider.itemCount == 0 -> 0
+        columnsInfos.measuredItems == provider.itemCount -> {
+            (columnsInfos.maxHeight() - constraints.maxHeight + bottomPadding).coerceAtLeast(0)
+        }
+        columnsInfos.measuredItems < provider.itemCount -> Int.MAX_VALUE
+        else -> state.maxValue
     }
 }
 

@@ -10,7 +10,7 @@ import ru.debajo.staggeredlazycolumn.StaggeredLazyColumnScope
 @Stable
 @ExperimentalFoundationApi
 internal class StaggeredLazyColumnItemProvider(
-    private val intervals: State<List<StaggeredLazyColumnScope.Interval>>
+    val intervals: State<List<StaggeredLazyColumnScope.Interval>>
 ) : LazyLayoutItemProvider {
 
     private val keyToIndexMapInternal = mutableMapOf<Any, Int>()

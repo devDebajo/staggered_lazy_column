@@ -33,6 +33,9 @@ class StaggeredLazyColumnScope internal constructor() {
         contentType: (Int) -> Any? = { null },
         itemContent: @Composable (index: Int) -> Unit
     ) {
+        if (count == 0) {
+            return
+        }
         val startIndex = intervals.lastOrNull()?.lastIndex?.let { it + 1 } ?: 0
         val lastIndex = startIndex + count - 1
         val interval = Interval(
@@ -47,7 +50,7 @@ class StaggeredLazyColumnScope internal constructor() {
     }
 
     @Stable
-    internal class Interval(
+    internal data class Interval(
         val startIndex: Int,
         val lastIndex: Int,
         val count: Int,
