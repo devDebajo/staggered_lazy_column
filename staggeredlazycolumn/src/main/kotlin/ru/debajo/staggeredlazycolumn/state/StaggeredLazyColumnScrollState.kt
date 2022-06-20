@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 
 @Stable
 @OptIn(ExperimentalFoundationApi::class)
-class StaggeredLazyColumnScrollState internal constructor(
+class StaggeredLazyColumnScrollState(
     internal val firstVisibleItemIndexInner: Int = 0,
     internal val firstVisibleItemScrollOffsetInner: Int = 0,
 ) : ScrollableState {
@@ -215,7 +215,6 @@ class StaggeredLazyColumnScrollState internal constructor(
 }
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 fun rememberStaggeredLazyColumnState(
     initialFirstVisibleItemIndex: Int = 0,
     initialFirstVisibleItemScrollOffset: Int = 0
