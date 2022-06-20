@@ -1,11 +1,9 @@
 package ru.debajo.staggeredlazycolumn
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 
 @Stable
-@OptIn(ExperimentalFoundationApi::class)
 class StaggeredLazyColumnScope internal constructor() {
 
     internal val intervals = mutableListOf<Interval>()
