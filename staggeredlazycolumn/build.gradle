@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         minSdk 21
@@ -51,7 +51,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
 
     sourceSets {
@@ -77,7 +77,7 @@ afterEvaluate {
 
                 groupId = 'ru.debajo'
                 artifactId = 'staggeredlazycolumn'
-                version = '1.0.0-beta06'
+                version = '1.0.0-rc01'
             }
         }
     }
